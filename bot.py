@@ -1,22 +1,14 @@
-from telethon import TelegramClient, events
 import os
-from dotenv import load_dotenv
+from telethon.sync import TelegramClient
 
-load_dotenv()  # Load variables from .env file
+api_id = int(os.getenv('API_ID'))
+api_hash = os.getenv('API_HASH')
+bot_token = os.getenv('BOT_TOKEN')
 
-API_ID = int(os.getenv("API_ID"))
-API_HASH = os.getenv("API_HASH")
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-TARGET_BOT_ID = -1006180774358
-CHANNEL_USERNAME = -1001156896568
+client = TelegramClient('bot', api_id, api_hash).start(bot_token=bot_token)
 
-client = TelegramClient('session', API_ID, API_HASH)
+async def main():
+    print("Bot Started!")
 
-@client.on(events.NewMessage(chats=CHANNEL_USERNAME))
-async def forward_to_bot(event):
-    await client.send_message(TARGET_BOT_ID, event.message)
-
-client.start()
-print("Userbot is running...")
-client.run_until_disconnected()
-
+with client:
+    client.loop.run_until_complete(main())
